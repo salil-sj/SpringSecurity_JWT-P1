@@ -11,6 +11,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/user")
 public class UserRestController {
@@ -51,6 +53,14 @@ public class UserRestController {
         return ResponseEntity.ok(new UserResponse(token , "Success! Token Generated"));
 
     }
+
+
+    @PostMapping("/welcome")
+    public ResponseEntity<String> accessUserData(Principal p) {
+        return ResponseEntity.ok("Hello user:");
+    }
+
+
 
 
 }

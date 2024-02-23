@@ -1,5 +1,6 @@
 package com.example.security.jwt.config;
 
+import com.example.security.jwt.Filters.SecurityFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
@@ -26,6 +28,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 
     @Autowired
     private InvaliduserAuthEntryPoint authEntryPoint;
+
+    @Autowired
+    private SecurityFilter securityFilter;
 
     @Bean
     public AuthenticationManager authenticationManager(
@@ -47,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
        http.
                csrf().disable()
                .authorizeRequests()
-               .antMatchers("/user/save" , "/user/login")
+               .antMatchers("/user/save" , "/user/login" , "/user/welcome")
                .permitAll()
                .anyRequest().authenticated()
                .and()
@@ -55,7 +60,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                .authenticationEntryPoint(authEntryPoint)
                .and()
                .sessionManagement()
-               .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+               .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+               .and()
+               .addFilterBefore(securityFilter , UsernamePasswordAuthenticationFilter.class);
+
         //TODO: verify for 2nd user
     }
 }
